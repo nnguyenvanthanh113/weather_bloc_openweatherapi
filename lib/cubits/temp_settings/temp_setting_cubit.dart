@@ -3,11 +3,12 @@ import 'package:weather_bloc_openweatherapi/cubits/temp_settings/temp_setting.st
 
 class TempSettingsCubit extends Cubit<TempSettingState> {
   TempSettingsCubit() : super(TempSettingState.initial());
+
   void toggleTempUnit() {
     emit(state.copyWith(
-      tempUnit: state.tempUnit == TempUnit.Celsius
-          ? TempUnit.Fahrenheit
-          : TempUnit.Celsius,
+      tempUnit: state.tempUnit == TempUnit.celsius
+          ? TempUnit.fahrenheit
+          : TempUnit.celsius,
     ));
   }
 }

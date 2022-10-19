@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_bloc_openweatherapi/cubits/background_image/backgrond_image_cubit.dart';
+import 'package:weather_bloc_openweatherapi/cubits/background_image/background_image_cubit.dart';
 import 'package:weather_bloc_openweatherapi/cubits/temp_settings/temp_setting_cubit.dart';
 import 'package:weather_bloc_openweatherapi/cubits/text_theme/text_them_cubit.dart';
 import 'package:weather_bloc_openweatherapi/cubits/weather/weather_cubit.dart';
 import 'package:weather_bloc_openweatherapi/pages/home_page.dart';
+import 'package:weather_bloc_openweatherapi/services/weather_api_service.dart';
 
 import 'repositories/weather_repository.dart';
 
@@ -18,7 +19,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => WeatherRepository,
+      create: (_) => WeatherRepository(
+        weatherApiServices: WeatherApiServices(),
+      ),
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
