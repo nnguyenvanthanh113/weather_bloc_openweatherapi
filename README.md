@@ -1,8 +1,8 @@
-# Ứng dụng xem thời tiết
+:fire: Ứng dụng xem thời tiết
 
 Đây là ứng dụng xem thời tiết sử dụng bloc để quản lý trạng thái.
 
-## Tính năng
+:pencil2: Tính năng
 
 •	Flutter
 
