@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_bloc_openweatherapi/cubits/background_image/background_image_cubit.dart';
@@ -10,7 +8,6 @@ import 'package:weather_bloc_openweatherapi/cubits/text_theme/text_them_cubit.da
 import 'package:weather_bloc_openweatherapi/cubits/text_theme/text_theme_state.dart';
 import 'package:weather_bloc_openweatherapi/cubits/weather/weather_cubit.dart';
 import 'package:weather_bloc_openweatherapi/cubits/weather/weather_state.dart';
-import 'package:weather_bloc_openweatherapi/pages/search_page.dart';
 import 'package:weather_bloc_openweatherapi/pages/setting_page.dart';
 import 'package:weather_bloc_openweatherapi/pages/widget/create_router.dart';
 import 'package:weather_bloc_openweatherapi/pages/widget/error_dialog.dart';
@@ -24,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class Temperature extends State<HomePage> {
   String? _cityName;
+  final TextEditingController _cityController = TextEditingController();
   @override
   void initState() {
     _fetchInitial();
@@ -62,13 +60,77 @@ class Temperature extends State<HomePage> {
         backgroundColor: Colors.white70.withOpacity(0.85),
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () async {
-              _cityName = await Navigator.push(
-                  context, createRoute(const SearchPage()));
-              log('city: $_cityName');
-              if (_cityName != null) {
-                context.read<WeatherCubit>().fetchWeather(_cityName!);
-              }
+            onPressed: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (context) => SingleChildScrollView(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 70,
+                          child: Divider(
+                            thickness: 3.5,
+                            color: Color(0xff6b9dfc),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: _cityController,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                              prefixIcon: GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read<WeatherCubit>()
+                                        .fetchWeather(_cityController.text);
+                                    _cityController.clear();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Icon(
+                                    Icons.search,
+                                    color: Colors.black,
+                                  )),
+                              suffixIcon: GestureDetector(
+                                onTap: () => _cityController.clear(),
+                                child: const Icon(Icons.close,
+                                    color: Colors.black),
+                              ),
+                              hintText: "thành phố...",
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10),
+                              )),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        Container(
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: ElevatedButton(
+                              child: const Text('Search'),
+                              onPressed: () {
+                                context
+                                    .read<WeatherCubit>()
+                                    .fetchWeather(_cityController.text);
+                                _cityController.clear();
+                                Navigator.pop(context);
+                              },
+                            ))
+                      ],
+                    ),
+                  ),
+                ),
+              );
             },
             icon: const Padding(
               padding: EdgeInsets.only(right: 8.0),
@@ -107,8 +169,8 @@ class Temperature extends State<HomePage> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: state.isHot == true
-                              ? const AssetImage("assets/images/hanoi.jpg")
-                              : const AssetImage("assets/images/saigon.jpg"),
+                              ? const AssetImage("assets/images/beach.jpg")
+                              : const AssetImage("assets/images/sea.jpg"),
                           fit: BoxFit.cover)),
                   child: BlocConsumer<WeatherCubit, WeatherState>(
                     listener: (context, state) {
